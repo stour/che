@@ -60,4 +60,10 @@ public interface CheckoutRequest extends GitRequest {
     
     CheckoutRequest withFiles(List<String> files);
 
+    /** @return specified revision */
+    String getRevision();
+
+    void setRevision(String revision);
+
+    CheckoutRequest withRevision(String revision);
 }

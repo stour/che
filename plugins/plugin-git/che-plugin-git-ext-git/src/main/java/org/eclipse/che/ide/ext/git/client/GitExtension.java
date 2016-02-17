@@ -35,6 +35,7 @@ import org.eclipse.che.ide.ext.git.client.action.PushAction;
 import org.eclipse.che.ide.ext.git.client.action.RemoveFromIndexAction;
 import org.eclipse.che.ide.ext.git.client.action.ResetFilesAction;
 import org.eclipse.che.ide.ext.git.client.action.ResetToCommitAction;
+import org.eclipse.che.ide.ext.git.client.action.RevertAction;
 import org.eclipse.che.ide.ext.git.client.action.ShowBranchesAction;
 import org.eclipse.che.ide.ext.git.client.action.ShowGitUrlAction;
 import org.eclipse.che.ide.ext.git.client.action.ShowMergeAction;
@@ -82,6 +83,7 @@ public class GitExtension {
                         CompareWithLatestAction compareWithLatestAction,
                         CompareWithBranchAction compareWithBranchAction,
                         CompareWithRevisionAction compareWithRevisionAction,
+                        RevertAction revertAction,
                         KeyBindingAgent keyBinding,
                         AppContext appContext) {
 
@@ -121,6 +123,8 @@ public class GitExtension {
         commandGroup.add(resetToCommitAction);
         actionManager.registerAction("gitRemoveFromIndexCommit", removeFromIndexAction);
         commandGroup.add(removeFromIndexAction);
+        actionManager.registerAction("gitRevert", revertAction);
+        commandGroup.add(revertAction);
         actionManager.registerAction("gitCommit", commitAction);
         commandGroup.add(commitAction);
         actionManager.registerAction("gitBranches", showBranchesAction);
@@ -167,6 +171,8 @@ public class GitExtension {
         gitCompareContextMenuGroup.add(compareWithLatestAction);
         gitCompareContextMenuGroup.add(compareWithBranchAction);
         gitCompareContextMenuGroup.add(compareWithRevisionAction);
+        gitCompareContextMenuGroup.addSeparator();
+        gitCompareContextMenuGroup.add(revertAction);
 
         DefaultActionGroup mainContextMenuGroup = (DefaultActionGroup)actionManager.getAction("resourceOperation");
         mainContextMenuGroup.add(gitCompareContextMenuGroup);

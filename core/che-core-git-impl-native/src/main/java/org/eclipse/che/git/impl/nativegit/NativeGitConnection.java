@@ -162,6 +162,7 @@ public class NativeGitConnection implements GitConnection {
                  .setCreateNew(request.isCreateNew())
                  .setTrackBranch(request.getTrackBranch())
                  .setFilePaths(request.getFiles())
+                 .setRevision(request.getRevision())
                  .execute();
     }
 

@@ -24,6 +24,7 @@ public class CheckoutCommand extends GitCommand<Void> {
 
     private boolean createNew;
     private String  branchName;
+    private String  revision;
     private String  trackBranch;
     private String  startPoint;
     private List<String> filePaths;
@@ -47,6 +48,9 @@ public class CheckoutCommand extends GitCommand<Void> {
         commandLine.add("checkout");
        
         if (filePaths != null && !filePaths.isEmpty()){
+            if (revision != null) {
+                commandLine.add(revision);
+            }
             for (String file : filePaths){
         	    commandLine.add(file);
             }
@@ -117,6 +121,16 @@ public class CheckoutCommand extends GitCommand<Void> {
      */
     public CheckoutCommand setFilePaths(List<String> filePaths) {
         this.filePaths = filePaths;
+        return this;
+    }
+
+    /**
+     * @param revision
+     *         checkout specific revision
+     * @return CheckoutCommand with established revision
+     */
+    public CheckoutCommand setRevision(String revision) {
+        this.revision = revision;
         return this;
     }
 }
