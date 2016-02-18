@@ -240,7 +240,8 @@ set_environment_variables () {
   # The base directory of Che
   if [ -z "${CHE_HOME}" ]; then
     if [ "${WIN}" == "true" ]; then
-      export CHE_HOME="${CHE_WINDOWS_SHORT_DIR}"
+      # che-497: Determine windows short directory name in bash
+      export CHE_HOME=`(cd "$( dirname "${BASH_SOURCE[0]}" )" && cmd //C 'FOR %i in (..) do @echo %~Si')`
     else 
       export CHE_HOME="$(dirname "$(cd "$(dirname "${0}")" && pwd -P)")"
     fi
@@ -250,14 +251,17 @@ set_environment_variables () {
     export DOCKER_MACHINE_HOST="${CHE_IP}"
   fi
 
+  if [ "${WIN}" == "true" ] && [ ! -z "${JAVA_HOME}" ]; then
+    # che-497: Determine windows short directory name in bash
+    export JAVA_HOME=`(cygpath -u $(cygpath -w --short-name "${JAVA_HOME}"))` 
+  fi
+
   # Convert Tomcat environment variables to POSIX format.
-  if [[ "${JAVA_HOME}" == *":"* ]]
-  then
+  if [[ "${JAVA_HOME}" == *":"* ]]; then
     JAVA_HOME=$(echo /"${JAVA_HOME}" | sed  's|\\|/|g' | sed 's|:||g')
   fi
 
-  if [[ "${CHE_HOME}" == *":"* ]]
-  then
+  if [[ "${CHE_HOME}" == *":"* ]]; then
     CHE_HOME=$(echo /"${CHE_HOME}" | sed  's|\\|/|g' | sed 's|:||g')
   fi
 
@@ -477,11 +481,16 @@ call_catalina () {
 
   if [[ "${SKIP_JAVA_VERSION}" == false ]]; then
     # Che requires Java version 1.8 or higher.
-        JAVA_VERSION=$("${JAVA_HOME}/bin/java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-        if [[  -z "${JAVA_VERSION}" || "${JAVA_VERSION}" < "1.8" ]]; then
-          error_exit "Che requires Java version 1.8 or higher. We found a ${JAVA_VERSION}."
-          return
-        fi
+    JAVA_VERSION=$("${JAVA_HOME}/bin/java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
+    if [  -z "${JAVA_VERSION}" ]; then
+      error_exit "Failure running JAVA_HOME/bin/java -version. We received ${JAVA_VERSION}."
+      return
+    fi
+
+    if [[ "${JAVA_VERSION}" < "1.8" ]]; then
+      error_exit "Che requires Java version 1.8 or higher. We found ${JAVA_VERSION}."
+      return
+    fi
   fi
 
   ### Cannot add this in setenv.sh.
@@ -702,7 +711,6 @@ launch_che_server () {
                                             `"mkdir -p /home/user/che/lib-copy/ && "`
                                             `"sudo chown -R user:user /home/user && "`
                                             `"cp -rf /home/user/che/lib/* /home/user/che/lib-copy && "`
-                                            #`"sudo sed -i 's/random/urandom/g' /opt/jre1.8.0_65/lib/security/java.security && "`
                                             `"cd /home/user/che/bin/ && ./che.sh "-p:${CHE_PORT}" "`
                                             `"--skip:client "${DEBUG_PRINT_VALUE}" "${CHE_SERVER_ACTION}"" || DOCKER_EXIT=$? || true
     set +x
