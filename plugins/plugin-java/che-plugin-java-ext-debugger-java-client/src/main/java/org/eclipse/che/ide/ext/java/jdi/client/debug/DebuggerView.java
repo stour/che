@@ -43,8 +43,8 @@ public interface DebuggerView extends View<DebuggerView.ActionDelegate> {
         /** Performs any actions appropriate in response to the user having pressed the Step over button. */
         void onStepOverButtonClicked();
 
-        /** Performs any actions appropriate in response to the user having pressed the Step return button. */
-        void onStepReturnButtonClicked();
+        /** Performs any actions appropriate in response to the user having pressed the Step out button. */
+        void onStepOutButtonClicked();
 
         /** Performs any actions appropriate in response to the user having pressed the Change value button. */
         void onChangeValueButtonClicked();
@@ -144,7 +144,7 @@ public interface DebuggerView extends View<DebuggerView.ActionDelegate> {
      * @param isEnable
      *         <code>true</code> to enable the button, <code>false</code> to disable it
      */
-    void setEnableStepReturnButton(boolean isEnable);
+    void setEnableStepOutButton(boolean isEnable);
 
     /**
      * Sets whether Change value button is enabled.

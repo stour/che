@@ -69,7 +69,7 @@ public class DebuggerViewImpl extends BaseView<DebuggerView.ActionDelegate> impl
     @UiField
     Button                          btnStepOver;
     @UiField
-    Button                          btnStepReturn;
+    Button btnStepOut;
     @UiField
     Button                          btnDisconnect;
     @UiField
@@ -120,7 +120,7 @@ public class DebuggerViewImpl extends BaseView<DebuggerView.ActionDelegate> impl
         btnResume.getElement().appendChild(new SVGImage(resources.resumeButton()).getElement());
         btnStepInto.getElement().appendChild(new SVGImage(resources.stepIntoButton()).getElement());
         btnStepOver.getElement().appendChild(new SVGImage(resources.stepOverButton()).getElement());
-        btnStepReturn.getElement().appendChild(new SVGImage(resources.stepReturnButton()).getElement());
+        btnStepOut.getElement().appendChild(new SVGImage(resources.stepOutButton()).getElement());
         btnDisconnect.getElement().appendChild(new SVGImage(resources.disconnectButton()).getElement());
         btnRemoveAllBreakpoints.getElement().appendChild(new SVGImage(resources.removeAllBreakpointsButton()).getElement());
         btnChangeValue.getElement().appendChild(new SVGImage(resources.changeVariableValue()).getElement());
@@ -220,6 +220,9 @@ public class DebuggerViewImpl extends BaseView<DebuggerView.ActionDelegate> impl
 
             @Override
             public void onKeyboard(@NotNull KeyboardEvent event) {
+                if (event.getKeyCode() == KeyboardEvent.KeyCode.F2) {
+                    onChangeValueButtonClicked(null);
+                }
             }
         });
 
@@ -299,8 +302,8 @@ public class DebuggerViewImpl extends BaseView<DebuggerView.ActionDelegate> impl
 
     /** {@inheritDoc} */
     @Override
-    public void setEnableStepReturnButton(boolean isEnable) {
-        btnStepReturn.setEnabled(isEnable);
+    public void setEnableStepOutButton(boolean isEnable) {
+        btnStepOut.setEnabled(isEnable);
     }
 
     /** {@inheritDoc} */
@@ -344,9 +347,9 @@ public class DebuggerViewImpl extends BaseView<DebuggerView.ActionDelegate> impl
         delegate.onStepOverButtonClicked();
     }
 
-    @UiHandler("btnStepReturn")
-    public void onStepReturnButtonClicked(@SuppressWarnings("UnusedParameters") ClickEvent event) {
-        delegate.onStepReturnButtonClicked();
+    @UiHandler("btnStepOut")
+    public void onStepOutButtonClicked(@SuppressWarnings("UnusedParameters") ClickEvent event) {
+        delegate.onStepOutButtonClicked();
     }
 
     @UiHandler("btnDisconnect")

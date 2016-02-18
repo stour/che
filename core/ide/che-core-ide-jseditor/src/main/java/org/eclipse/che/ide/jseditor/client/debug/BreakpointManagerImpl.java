@@ -12,6 +12,7 @@ package org.eclipse.che.ide.jseditor.client.debug;
 
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 
 import org.eclipse.che.commons.annotation.Nullable;
@@ -23,18 +24,9 @@ import org.eclipse.che.ide.api.project.node.HasProjectConfig.ProjectConfig;
 import org.eclipse.che.ide.api.project.tree.VirtualFile;
 import org.eclipse.che.ide.api.project.tree.VirtualFileImpl;
 import org.eclipse.che.ide.api.project.tree.VirtualFileInfo;
-import org.eclipse.che.ide.debug.Breakpoint;
+import org.eclipse.che.ide.debug.*;
 import org.eclipse.che.ide.debug.Breakpoint.Type;
-import org.eclipse.che.ide.debug.BreakpointManager;
-import org.eclipse.che.ide.debug.BreakpointRenderer;
 import org.eclipse.che.ide.debug.BreakpointRenderer.LineChangeAction;
-import org.eclipse.che.ide.debug.BreakpointStateEvent;
-import org.eclipse.che.ide.debug.BreakpointStateEventHandler;
-import org.eclipse.che.ide.debug.Debugger;
-import org.eclipse.che.ide.debug.DebuggerManager;
-import org.eclipse.che.ide.debug.DebuggerStateEvent;
-import org.eclipse.che.ide.debug.DebuggerStateEventHandler;
-import org.eclipse.che.ide.debug.HasBreakpointRenderer;
 import org.eclipse.che.ide.debug.dto.BreakpointDto;
 import org.eclipse.che.ide.dto.DtoFactory;
 import org.eclipse.che.ide.jseditor.client.document.Document;
@@ -49,8 +41,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import static org.eclipse.che.ide.debug.DebuggerStateEvent.DebuggerState.CONNECTED;
-import static org.eclipse.che.ide.debug.DebuggerStateEvent.DebuggerState.DISCONNECTED;
+import static org.eclipse.che.ide.debug.DebuggerState.CONNECTED;
+import static org.eclipse.che.ide.debug.DebuggerState.DISCONNECTED;
 
 /**
  * Implementation of {@link BreakpointManager} for jseditor.
@@ -73,7 +65,7 @@ public class BreakpointManagerImpl implements BreakpointManager, LineChangeActio
 
 
     private Breakpoint                       currentBreakpoint;
-    private DebuggerStateEvent.DebuggerState debuggerState;
+    private DebuggerState debuggerState;
 
     @Inject
     public BreakpointManagerImpl(final EditorAgent editorAgent,

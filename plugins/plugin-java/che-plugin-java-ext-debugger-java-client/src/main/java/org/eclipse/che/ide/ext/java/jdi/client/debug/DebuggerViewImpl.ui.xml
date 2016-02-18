@@ -70,8 +70,8 @@
                     <g:Button ui:field="btnStepOver" title="{locale.stepOver}"
                                     addStyleNames="{style.debuggerButton}" debugId="debugger-btnStepOver">
                     </g:Button>
-                    <g:Button ui:field="btnStepReturn" title="{locale.stepReturn}"
-                                    addStyleNames="{style.debuggerButton}" debugId="debugger-btnStepReturn">
+                    <g:Button ui:field="btnStepOut" title="{locale.stepOut}"
+                              addStyleNames="{style.debuggerButton}" debugId="debugger-btnStepOut">
                     </g:Button>
                     <g:Button ui:field="btnDisconnect" title="{locale.disconnectButton}"
                                   addStyleNames="{style.debuggerButton}" debugId="debugger-btnDisconnect">

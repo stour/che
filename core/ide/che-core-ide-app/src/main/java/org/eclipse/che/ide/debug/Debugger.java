@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.che.ide.debug;
 
+import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.ide.api.project.tree.VirtualFile;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -36,4 +37,56 @@ public interface Debugger {
      * @param callback
      */
     void deleteBreakpoint(VirtualFile file, int lineNumber, AsyncCallback<Void> callback);
+
+    /**
+     * Deletes all breakpoints
+     */
+    void deleteAllBreakpoints();
+
+    /**
+     * Attaches debugger using given port and host.
+     *
+     * @param host host to which debugger will be connected
+     * @param port port to which debugger will be connected in specified host
+     */
+    void attachDebugger(final String host, final int port);
+
+    /**
+     * Disconnects from process under a debugger.
+     */
+    void disconnectDebugger();
+
+    /**
+     * Steps into a method
+     */
+    void stepInto();
+
+    /**
+     * Steps without entering into a method
+     */
+    void stepOver();
+
+    /**
+     * Returns from a method
+     */
+    void stepOut();
+
+    /**
+     * Resumes execution
+     */
+    void resume();
+
+    /**
+     * Evaluates given expression
+     *
+     * @param expression expression to evaluate
+     * @return result of evaluating expression
+     */
+    Promise<String> evaluateExpression(String expression);
+
+    /**
+     * @return current debugger state
+     */
+    DebuggerState getDebuggerState();
+
 }

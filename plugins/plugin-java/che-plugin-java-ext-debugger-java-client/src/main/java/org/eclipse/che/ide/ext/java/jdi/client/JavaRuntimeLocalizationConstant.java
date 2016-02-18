@@ -51,14 +51,46 @@ public interface JavaRuntimeLocalizationConstant extends com.google.gwt.i18n.cli
     @Key("stepOver")
     String stepOver();
 
-    @Key("stepReturn")
-    String stepReturn();
+    @Key("stepOut")
+    String stepOut();
 
     @Key("changeValue")
     String changeValue();
 
     @Key("evaluateExpression")
     String evaluateExpression();
+
+    /* actions */
+    @Key("showHideDebuggerPanel")
+    String showHideDebuggerPanel();
+
+    /* buttons / actions descriptions */
+    @Key("resumeButtonDescription")
+    String resumeButtonDescription();
+
+    @Key("disconnectButtonDescription")
+    String disconnectButtonDescription();
+
+    @Key("stepIntoDescription")
+    String stepIntoDescription();
+
+    @Key("stepOverDescription")
+    String stepOverDescription();
+
+    @Key("stepOutDescription")
+    String stepOutDescription();
+
+    @Key("removeBreakpointsButtonDescription")
+    String removeBreakpointsButtonDescription();
+
+    @Key("changeValueDescription")
+    String changeValueDescription();
+
+    @Key("evaluateExpressionDescription")
+    String evaluateExpressionDescription();
+
+    @Key("showHideDebuggerPanelDescription")
+    String showHideDebuggerPanelDescription();
 
     /* messages */
     @Key("debugger.connecting.title")

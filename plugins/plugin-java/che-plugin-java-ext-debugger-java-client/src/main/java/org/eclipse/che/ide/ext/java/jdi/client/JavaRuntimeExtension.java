@@ -18,13 +18,16 @@ import org.eclipse.che.ide.api.action.DefaultActionGroup;
 import org.eclipse.che.ide.api.action.IdeActions;
 import org.eclipse.che.ide.api.constraints.Constraints;
 import org.eclipse.che.ide.api.extension.Extension;
+import org.eclipse.che.ide.api.keybinding.KeyBindingAgent;
+import org.eclipse.che.ide.api.keybinding.KeyBuilder;
 import org.eclipse.che.ide.debug.DebuggerManager;
-import org.eclipse.che.ide.ext.java.jdi.client.actions.RemoteDebugAction;
+import org.eclipse.che.ide.ext.java.jdi.client.actions.*;
 import org.eclipse.che.ide.ext.java.jdi.client.debug.DebuggerPresenter;
 import org.eclipse.che.ide.ext.java.jdi.client.fqn.FqnResolverFactory;
 import org.eclipse.che.ide.ext.java.jdi.client.fqn.JavaClassFqnResolver;
 import org.eclipse.che.ide.ext.java.jdi.client.fqn.JavaFqnResolver;
 import org.eclipse.che.ide.extension.maven.shared.MavenAttributes;
+import org.eclipse.che.ide.util.input.KeyCodeMap;
 
 import static org.eclipse.che.ide.MimeType.APPLICATION_JAVA_CLASS;
 import static org.eclipse.che.ide.MimeType.TEXT_X_JAVA;
@@ -38,6 +41,7 @@ import static org.eclipse.che.ide.api.action.IdeActions.GROUP_RUN;
  * @author Artem Zatsarynnyi
  * @author Valeriy Svydenko
  * @author Anatoliy Bazko
+ * @author Morhun Mykola
  */
 @Singleton
 @Extension(title = "Java Debugger", version = "3.0.0")
@@ -48,22 +52,53 @@ public class JavaRuntimeExtension {
     public static final String DISCONNECT_CHANNEL = "debugger:disconnected:";
 
     private static final String REMOTE_DEBUG_ID = "remoteDebug";
+    private static final String DISCONNECT_DEBUG_ID = "disconnectDebug";
+    private static final String STEP_INTO_ID = "stepInto";
+    private static final String STEP_OVER_ID = "stepOver";
+    private static final String STEP_OUT_ID = "stepOut";
+    private static final String RESUME_EXECUTION_ID = "resumeExecution";
+    private static final String EVALUATE_EXPRESSION_ID = "evaluateExpression";
+    private static final String SHOW_HIDE_DEBUGGER_PANEL_ID = "showHideDebuggerPanel";
 
     @Inject
     public JavaRuntimeExtension(ActionManager actionManager,
                                 RemoteDebugAction remoteDebugAction,
+                                DisconnectDebuggerAction disconnectDebuggerAction,
+                                StepIntoAction stepIntoAction,
+                                StepOverAction stepOverAction,
+                                StepOutAction stepOutAction,
+                                ResumeExecutionAction resumeExecutionAction,
+                                EvaluateExpressionAction evaluateExpressionAction,
+                                ShowHideDebuggerPanelAction showHideDebuggerPanelAction,
                                 DebuggerManager debuggerManager,
                                 DebuggerPresenter debuggerPresenter,
                                 FqnResolverFactory resolverFactory,
                                 JavaFqnResolver javaFqnResolver,
-                                JavaClassFqnResolver javaClassFqnResolver) {
+                                JavaClassFqnResolver javaClassFqnResolver,
+                                KeyBindingAgent keyBinding) {
         final DefaultActionGroup runMenu = (DefaultActionGroup)actionManager.getAction(GROUP_RUN);
 
         // register actions
         actionManager.registerAction(REMOTE_DEBUG_ID, remoteDebugAction);
+        actionManager.registerAction(DISCONNECT_DEBUG_ID, disconnectDebuggerAction);
+        actionManager.registerAction(STEP_INTO_ID, stepIntoAction);
+        actionManager.registerAction(STEP_OVER_ID, stepOverAction);
+        actionManager.registerAction(STEP_OUT_ID, stepOutAction);
+        actionManager.registerAction(RESUME_EXECUTION_ID, resumeExecutionAction);
+        actionManager.registerAction(EVALUATE_EXPRESSION_ID, evaluateExpressionAction);
+        actionManager.registerAction(SHOW_HIDE_DEBUGGER_PANEL_ID, showHideDebuggerPanelAction);
 
         // add actions in main menu
+        runMenu.addSeparator();
         runMenu.add(remoteDebugAction, Constraints.LAST);
+        runMenu.add(disconnectDebuggerAction, Constraints.LAST);
+        runMenu.addSeparator();
+        runMenu.add(stepIntoAction, Constraints.LAST);
+        runMenu.add(stepOverAction, Constraints.LAST);
+        runMenu.add(stepOutAction, Constraints.LAST);
+        runMenu.add(resumeExecutionAction, Constraints.LAST);
+        runMenu.addSeparator();
+        runMenu.add(evaluateExpressionAction, Constraints.LAST);
 
         // add actions in context menu
         DefaultActionGroup runContextGroup = (DefaultActionGroup)actionManager.getAction(IdeActions.GROUP_RUN_CONTEXT_MENU);
@@ -74,5 +109,15 @@ public class JavaRuntimeExtension {
         resolverFactory.addResolver("application/java", javaFqnResolver);
         resolverFactory.addResolver(APPLICATION_JAVA_CLASS, javaClassFqnResolver);
         resolverFactory.addResolver(TEXT_X_JAVA_SOURCE, javaFqnResolver);
+
+        // keys binding
+        keyBinding.getGlobal().addKey(new KeyBuilder().alt().shift().charCode(KeyCodeMap.F9).build(), REMOTE_DEBUG_ID);
+        keyBinding.getGlobal().addKey(new KeyBuilder().action().charCode(KeyCodeMap.F2).build(), DISCONNECT_DEBUG_ID);
+        keyBinding.getGlobal().addKey(new KeyBuilder().charCode(KeyCodeMap.F7).build(), STEP_INTO_ID);
+        keyBinding.getGlobal().addKey(new KeyBuilder().charCode(KeyCodeMap.F8).build(), STEP_OVER_ID);
+        keyBinding.getGlobal().addKey(new KeyBuilder().shift().charCode(KeyCodeMap.F8).build(), STEP_OUT_ID);
+        keyBinding.getGlobal().addKey(new KeyBuilder().charCode(KeyCodeMap.F9).build(), RESUME_EXECUTION_ID);
+        keyBinding.getGlobal().addKey(new KeyBuilder().alt().charCode(KeyCodeMap.F8).build(), EVALUATE_EXPRESSION_ID);
+        keyBinding.getGlobal().addKey(new KeyBuilder().alt().charCode('5').build(), SHOW_HIDE_DEBUGGER_PANEL_ID);
     }
 }
