@@ -163,7 +163,6 @@ import org.eclipse.che.ide.rest.RestContext;
 import org.eclipse.che.ide.rest.RestContextProvider;
 import org.eclipse.che.ide.search.factory.FindResultNodeFactory;
 import org.eclipse.che.ide.selection.SelectionAgentImpl;
-import org.eclipse.che.ide.settings.common.SettingsPagePresenter;
 import org.eclipse.che.ide.statepersistance.OpenedFilesPersistenceComponent;
 import org.eclipse.che.ide.statepersistance.PersistenceComponent;
 import org.eclipse.che.ide.statepersistance.ShowHiddenFilesPersistenceComponent;
@@ -414,8 +413,6 @@ public class CoreGinModule extends AbstractGinModule {
         bind(LoaderView.class).to(LoaderViewImpl.class).in(Singleton.class);
 
         bind(HotKeysDialogView.class).to(HotKeysDialogViewImpl.class).in(Singleton.class);
-
-        GinMultibinder.newSetBinder(binder(), SettingsPagePresenter.class);
 
         bind(RecentFileList.class).to(RecentFileStore.class).in(Singleton.class);
         install(new GinFactoryModuleBuilder().build(RecentFileActionFactory.class));

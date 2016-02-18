@@ -63,6 +63,10 @@ public class PreferencesManagerImpl implements PreferencesManager {
     /** {@inheritDoc} */
     @Override
     public void flushPreferences(final AsyncCallback<Map<String, String>> callback) {
+        if (changedPreferences.isEmpty()) {
+            callback.onSuccess(changedPreferences);
+            return;
+        }
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.putAll(changedPreferences);
 

@@ -14,11 +14,11 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import org.eclipse.che.api.promises.client.Operation;
 import org.eclipse.che.api.promises.client.Promise;
+import org.eclipse.che.ide.api.preferences.PreferencePagePresenter;
 import org.eclipse.che.ide.ext.java.client.JavaLocalizationConstant;
 import org.eclipse.che.ide.ext.java.client.inject.factories.PropertyWidgetFactory;
 import org.eclipse.che.ide.ext.java.client.settings.property.PropertyWidget;
 import org.eclipse.che.ide.ext.java.client.settings.service.SettingsServiceClient;
-import org.eclipse.che.ide.settings.common.SettingsPagePresenter.DirtyStateListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,13 +81,13 @@ public class ErrorWarningsPresenterTest {
     private JavaLocalizationConstant locale;
 
     @Mock
-    private DirtyStateListener           dirtyStateListener;
+    private PreferencePagePresenter.DirtyStateListener dirtyStateListener;
     @Mock
-    private Promise<Map<String, String>> mapPromise;
+    private Promise<Map<String, String>>               mapPromise;
     @Mock
-    private AcceptsOneWidget             container;
+    private AcceptsOneWidget                           container;
     @Mock
-    private PropertyWidget               widget;
+    private PropertyWidget                             widget;
 
     @Captor
     private ArgumentCaptor<Map<String, String>>            mapCaptor;

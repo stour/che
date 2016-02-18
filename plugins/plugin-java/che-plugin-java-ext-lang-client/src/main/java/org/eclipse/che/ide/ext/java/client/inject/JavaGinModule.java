@@ -21,6 +21,7 @@ import com.google.inject.name.Named;
 import org.eclipse.che.ide.MimeType;
 import org.eclipse.che.ide.api.extension.ExtensionGinModule;
 import org.eclipse.che.ide.api.filetypes.FileType;
+import org.eclipse.che.ide.api.preferences.PreferencePagePresenter;
 import org.eclipse.che.ide.api.project.node.interceptor.NodeInterceptor;
 import org.eclipse.che.ide.api.project.node.settings.SettingsProvider;
 import org.eclipse.che.ide.ext.java.client.CurrentClassFQNProvider;
@@ -46,7 +47,6 @@ import org.eclipse.che.ide.ext.java.client.settings.compiler.ErrorWarningsPresen
 import org.eclipse.che.ide.ext.java.client.settings.property.PropertyWidget;
 import org.eclipse.che.ide.ext.java.client.settings.property.PropertyWidgetImpl;
 import org.eclipse.che.ide.extension.machine.client.command.valueproviders.CommandPropertyValueProvider;
-import org.eclipse.che.ide.settings.common.SettingsPagePresenter;
 
 /**
  * @author Evgen Vidolob
@@ -81,7 +81,7 @@ public class JavaGinModule extends AbstractGinModule {
         install(new GinFactoryModuleBuilder().build(NodeFactory.class));
         install(new GinFactoryModuleBuilder().build(org.eclipse.che.ide.ext.java.client.navigation.factory.NodeFactory.class));
 
-        GinMultibinder<SettingsPagePresenter> settingsBinder = GinMultibinder.newSetBinder(binder(), SettingsPagePresenter.class);
+        GinMultibinder<PreferencePagePresenter> settingsBinder = GinMultibinder.newSetBinder(binder(), PreferencePagePresenter.class);
         settingsBinder.addBinding().to(ErrorWarningsPresenter.class);
 
         GinMultibinder.newSetBinder(binder(), CommandPropertyValueProvider.class).addBinding().to(CurrentClassFQNProvider.class);

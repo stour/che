@@ -17,11 +17,11 @@ import com.google.inject.Singleton;
 import org.eclipse.che.api.promises.client.Operation;
 import org.eclipse.che.api.promises.client.OperationException;
 import org.eclipse.che.api.promises.client.Promise;
+import org.eclipse.che.ide.api.preferences.AbstractPreferencePagePresenter;
 import org.eclipse.che.ide.ext.java.client.JavaLocalizationConstant;
 import org.eclipse.che.ide.ext.java.client.inject.factories.PropertyWidgetFactory;
 import org.eclipse.che.ide.ext.java.client.settings.property.PropertyWidget;
 import org.eclipse.che.ide.ext.java.client.settings.service.SettingsServiceClient;
-import org.eclipse.che.ide.settings.common.AbstractSettingsPagePresenter;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ import static org.eclipse.che.ide.ext.java.client.settings.compiler.ErrorWarning
  * @author Dmitry Shnurenko
  */
 @Singleton
-public class ErrorWarningsPresenter extends AbstractSettingsPagePresenter implements PropertyWidget.ActionDelegate {
+public class ErrorWarningsPresenter extends AbstractPreferencePagePresenter implements PropertyWidget.ActionDelegate {
 
     private final ErrorWarningsView     view;
     private final SettingsServiceClient service;
@@ -91,12 +91,7 @@ public class ErrorWarningsPresenter extends AbstractSettingsPagePresenter implem
     public void storeChanges() {
         service.applyCompileParameters(changedProperties);
 
-        for (Map.Entry<String, String> entry : changedProperties.entrySet()) {
-            String id = entry.getKey();
-            String changedValue = entry.getValue();
-
-            allProperties.put(id, changedValue);
-        }
+        allProperties.putAll(changedProperties);
 
         changedProperties.clear();
     }
