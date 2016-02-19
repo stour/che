@@ -41,7 +41,12 @@ import org.eclipse.che.ide.api.parts.base.BasePresenter;
 import org.eclipse.che.ide.api.project.node.HasStorablePath;
 import org.eclipse.che.ide.api.project.node.Node;
 import org.eclipse.che.ide.api.project.tree.VirtualFile;
-import org.eclipse.che.ide.debug.*;
+import org.eclipse.che.ide.debug.Breakpoint;
+import org.eclipse.che.ide.debug.BreakpointManager;
+import org.eclipse.che.ide.debug.BreakpointStateEvent;
+import org.eclipse.che.ide.debug.Debugger;
+import org.eclipse.che.ide.debug.DebuggerManager;
+import org.eclipse.che.ide.debug.DebuggerState;
 import org.eclipse.che.ide.dto.DtoFactory;
 import org.eclipse.che.ide.ext.java.client.project.node.JavaNodeManager;
 import org.eclipse.che.ide.ext.java.client.project.node.jar.JarFileNode;
@@ -592,7 +597,7 @@ public class DebuggerPresenter extends BasePresenter implements DebuggerView.Act
                     @Override
                     public void onSuccess(VirtualFile result) {
                         breakpointManager.setCurrentBreakpoint(finalLocation.getLineNumber() - 1);
-                        scrollEditorToExecutionPoint((EmbeddedTextEditorPresenter) editorAgent.getActiveEditor());
+                        scrollEditorToExecutionPoint((EmbeddedTextEditorPresenter)editorAgent.getActiveEditor());
                     }
 
                     @Override
@@ -602,7 +607,7 @@ public class DebuggerPresenter extends BasePresenter implements DebuggerView.Act
                 });
             } else {
                 breakpointManager.setCurrentBreakpoint(location.getLineNumber() - 1);
-                scrollEditorToExecutionPoint((EmbeddedTextEditorPresenter) activeEditor);
+                scrollEditorToExecutionPoint((EmbeddedTextEditorPresenter)activeEditor);
             }
 
             getStackFrameDump();

@@ -16,6 +16,7 @@ import org.eclipse.che.api.promises.client.PromiseError;
 import org.eclipse.che.ide.debug.Debugger;
 import org.eclipse.che.ide.debug.DebuggerManager;
 import org.eclipse.che.ide.ext.java.jdi.client.JavaRuntimeLocalizationConstant;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -26,8 +27,8 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class EvaluateExpressionPresenter implements EvaluateExpressionView.ActionDelegate {
-    private DebuggerManager debuggerManager;
-    private EvaluateExpressionView view;
+    private DebuggerManager                 debuggerManager;
+    private EvaluateExpressionView          view;
     private JavaRuntimeLocalizationConstant constant;
 
     /**

@@ -16,12 +16,18 @@ import com.google.inject.Singleton;
 import org.eclipse.che.ide.api.action.ActionManager;
 import org.eclipse.che.ide.api.action.DefaultActionGroup;
 import org.eclipse.che.ide.api.action.IdeActions;
-import org.eclipse.che.ide.api.constraints.Constraints;
 import org.eclipse.che.ide.api.extension.Extension;
 import org.eclipse.che.ide.api.keybinding.KeyBindingAgent;
 import org.eclipse.che.ide.api.keybinding.KeyBuilder;
 import org.eclipse.che.ide.debug.DebuggerManager;
-import org.eclipse.che.ide.ext.java.jdi.client.actions.*;
+import org.eclipse.che.ide.ext.java.jdi.client.actions.DisconnectDebuggerAction;
+import org.eclipse.che.ide.ext.java.jdi.client.actions.EvaluateExpressionAction;
+import org.eclipse.che.ide.ext.java.jdi.client.actions.RemoteDebugAction;
+import org.eclipse.che.ide.ext.java.jdi.client.actions.ResumeExecutionAction;
+import org.eclipse.che.ide.ext.java.jdi.client.actions.ShowHideDebuggerPanelAction;
+import org.eclipse.che.ide.ext.java.jdi.client.actions.StepIntoAction;
+import org.eclipse.che.ide.ext.java.jdi.client.actions.StepOutAction;
+import org.eclipse.che.ide.ext.java.jdi.client.actions.StepOverAction;
 import org.eclipse.che.ide.ext.java.jdi.client.debug.DebuggerPresenter;
 import org.eclipse.che.ide.ext.java.jdi.client.fqn.FqnResolverFactory;
 import org.eclipse.che.ide.ext.java.jdi.client.fqn.JavaClassFqnResolver;
@@ -33,6 +39,7 @@ import static org.eclipse.che.ide.MimeType.APPLICATION_JAVA_CLASS;
 import static org.eclipse.che.ide.MimeType.TEXT_X_JAVA;
 import static org.eclipse.che.ide.MimeType.TEXT_X_JAVA_SOURCE;
 import static org.eclipse.che.ide.api.action.IdeActions.GROUP_RUN;
+import static org.eclipse.che.ide.api.constraints.Constraints.LAST;
 
 /**
  * Extension allows debug Java web applications.
@@ -51,13 +58,13 @@ public class JavaRuntimeExtension {
     /** Channel for the messages containing message which informs about debugger is disconnected. */
     public static final String DISCONNECT_CHANNEL = "debugger:disconnected:";
 
-    private static final String REMOTE_DEBUG_ID = "remoteDebug";
-    private static final String DISCONNECT_DEBUG_ID = "disconnectDebug";
-    private static final String STEP_INTO_ID = "stepInto";
-    private static final String STEP_OVER_ID = "stepOver";
-    private static final String STEP_OUT_ID = "stepOut";
-    private static final String RESUME_EXECUTION_ID = "resumeExecution";
-    private static final String EVALUATE_EXPRESSION_ID = "evaluateExpression";
+    private static final String REMOTE_DEBUG_ID             = "remoteDebug";
+    private static final String DISCONNECT_DEBUG_ID         = "disconnectDebug";
+    private static final String STEP_INTO_ID                = "stepInto";
+    private static final String STEP_OVER_ID                = "stepOver";
+    private static final String STEP_OUT_ID                 = "stepOut";
+    private static final String RESUME_EXECUTION_ID         = "resumeExecution";
+    private static final String EVALUATE_EXPRESSION_ID      = "evaluateExpression";
     private static final String SHOW_HIDE_DEBUGGER_PANEL_ID = "showHideDebuggerPanel";
 
     @Inject
@@ -90,15 +97,15 @@ public class JavaRuntimeExtension {
 
         // add actions in main menu
         runMenu.addSeparator();
-        runMenu.add(remoteDebugAction, Constraints.LAST);
-        runMenu.add(disconnectDebuggerAction, Constraints.LAST);
+        runMenu.add(remoteDebugAction, LAST);
+        runMenu.add(disconnectDebuggerAction, LAST);
         runMenu.addSeparator();
-        runMenu.add(stepIntoAction, Constraints.LAST);
-        runMenu.add(stepOverAction, Constraints.LAST);
-        runMenu.add(stepOutAction, Constraints.LAST);
-        runMenu.add(resumeExecutionAction, Constraints.LAST);
+        runMenu.add(stepIntoAction, LAST);
+        runMenu.add(stepOverAction, LAST);
+        runMenu.add(stepOutAction, LAST);
+        runMenu.add(resumeExecutionAction, LAST);
         runMenu.addSeparator();
-        runMenu.add(evaluateExpressionAction, Constraints.LAST);
+        runMenu.add(evaluateExpressionAction, LAST);
 
         // add actions in context menu
         DefaultActionGroup runContextGroup = (DefaultActionGroup)actionManager.getAction(IdeActions.GROUP_RUN_CONTEXT_MENU);

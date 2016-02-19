@@ -18,10 +18,19 @@ import org.eclipse.che.ide.debug.DebuggerManager;
 import org.eclipse.che.ide.ext.java.jdi.client.debug.expression.EvaluateExpressionPresenter;
 import org.eclipse.che.ide.ext.java.jdi.client.debug.expression.EvaluateExpressionView;
 import org.junit.Test;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Matchers;
+import org.mockito.Mock;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Testing {@link org.eclipse.che.ide.ext.java.jdi.client.debug.expression.EvaluateExpressionPresenter} functionality.
@@ -34,20 +43,20 @@ public class EvaluateExpressionTest extends BaseTest {
     private static final String EVALUATION_RESULT = "result";
     private static final String FAIL_REASON       = "reason";
     @Mock
-    private EvaluateExpressionView      view;
+    private EvaluateExpressionView view;
     @Mock
-    private DebuggerManager debuggerManager;
+    private DebuggerManager        debuggerManager;
     @Mock
-    private Debugger debugger;
+    private Debugger               debugger;
     @Mock
-    private Promise<String> promise;
+    private Promise<String>        promise;
     @Mock
-    private PromiseError promiseError;
+    private PromiseError           promiseError;
 
     @Captor
     private ArgumentCaptor<Operation<PromiseError>> errorCaptor;
     @InjectMocks
-    private EvaluateExpressionPresenter presenter;
+    private EvaluateExpressionPresenter             presenter;
 
     @Test
     public void shouldShowDialog() throws Exception {
@@ -110,8 +119,8 @@ public class EvaluateExpressionTest extends BaseTest {
     public void testEvaluateExpressionRequestIsFailed() throws Exception {
         when(view.getExpression()).thenReturn(EXPRESSION);
         when(debugger.evaluateExpression(view.getExpression())).thenReturn(promise);
-        when(promise.then((Operation) anyObject())).thenReturn(promise);
-        when(promise.catchError(Matchers.<Operation<PromiseError>> anyObject())).thenReturn(promise);
+        when(promise.then((Operation)anyObject())).thenReturn(promise);
+        when(promise.catchError(Matchers.<Operation<PromiseError>>anyObject())).thenReturn(promise);
         when(debuggerManager.getDebugger()).thenReturn(debugger);
         when(promiseError.getMessage()).thenReturn(FAIL_REASON);
 

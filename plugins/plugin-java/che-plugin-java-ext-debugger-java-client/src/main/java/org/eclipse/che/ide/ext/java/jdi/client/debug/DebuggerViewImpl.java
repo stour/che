@@ -69,7 +69,7 @@ public class DebuggerViewImpl extends BaseView<DebuggerView.ActionDelegate> impl
     @UiField
     Button                          btnStepOver;
     @UiField
-    Button btnStepOut;
+    Button                          btnStepOut;
     @UiField
     Button                          btnDisconnect;
     @UiField
@@ -169,7 +169,7 @@ public class DebuggerViewImpl extends BaseView<DebuggerView.ActionDelegate> impl
                     }
                 };
 
-        breakpoints = SimpleList.create                            ((SimpleList.View)breakPointsElement,
+        breakpoints = SimpleList.create((SimpleList.View)breakPointsElement,
                                         coreRes.defaultSimpleListCss(),
                                         breakpointListItemRenderer,
                                         breakpointListEventDelegate);
