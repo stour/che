@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 
+import org.eclipse.che.api.core.ErrorCodes;
 import org.eclipse.che.api.core.rest.shared.dto.ServiceError;
 import org.eclipse.che.api.git.gwt.client.GitServiceClient;
 import org.eclipse.che.api.git.shared.Branch;
@@ -49,10 +50,12 @@ import org.eclipse.che.ide.ui.dialogs.DialogFactory;
 import org.eclipse.che.ide.ui.dialogs.InputCallback;
 
 import javax.validation.constraints.NotNull;
+
 import java.util.List;
 
 import static org.eclipse.che.api.git.shared.BranchListRequest.LIST_ALL;
 import static org.eclipse.che.ide.api.notification.StatusNotification.Status.FAIL;
+import static org.eclipse.che.ide.util.ExceptionUtils.getErrorCode;
 
 /**
  * Presenter for displaying and work with branches.
@@ -361,16 +364,29 @@ public class BranchPresenter implements BranchView.ActionDelegate {
 
                                              @Override
                                              protected void onFailure(Throwable exception) {
-                                                 final String errorMessage = (exception.getMessage() != null)
-                                                                             ? exception.getMessage()
-                                                                             : constant.branchCreateFailed();
-                                                 final GitOutputConsole console = gitOutputConsoleFactory.create(BRANCH_CREATE_COMMAND_NAME);
-                                                 console.printError(errorMessage);
-                                                 consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
-                                                 notificationManager.notify(constant.branchCreateFailed(), FAIL, true, project.getRootProject());
+                                                 if (getErrorCode(exception) == ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED) {
+                                                     dialogFactory.createMessageDialog(constant.branchCreateNew(),
+                                                                                       constant.initCommitWasNotPerformed(),
+                                                                                       new ConfirmCallback() {
+                                                                                           @Override
+                                                                                           public void accepted() {
+                                                                                               //do nothing
+                                                                                           }
+                                                                                       }).show();
+                                                 } else {
+                                                     final String errorMessage =
+                                                                                 (exception.getMessage() != null) ? exception.getMessage()
+                                                                                     : constant.branchCreateFailed();
+                                                     final GitOutputConsole console =
+                                                                                      gitOutputConsoleFactory.create(BRANCH_CREATE_COMMAND_NAME);
+                                                     console.printError(errorMessage);
+                                                     consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
+                                                     notificationManager.notify(constant.branchCreateFailed(), FAIL, true,
+                                                                                project.getRootProject());
+                                                 }
                                              }
-                                         }
-                                        );
+
+                                         });
                 }
 
             }

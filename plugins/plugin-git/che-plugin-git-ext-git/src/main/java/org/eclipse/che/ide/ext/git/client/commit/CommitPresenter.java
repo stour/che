@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.eclipse.che.ide.api.notification.StatusNotification.Status.FAIL;
+import static org.eclipse.che.ide.util.ExceptionUtils.getErrorCode;
 
 /**
  * Presenter for commit changes on git.
@@ -294,8 +295,19 @@ public class CommitPresenter implements CommitView.ActionDelegate {
 
                              @Override
                              protected void onFailure(final Throwable exception) {
-                                 Log.warn(CommitPresenter.class, "Git log failed", exception);
-                                 CommitPresenter.this.view.setMessage("");
+                                 if (getErrorCode(exception) == ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED) {
+                                     dialogFactory.createMessageDialog(constant.branchCreateNew(), constant.initCommitWasNotPerformed(),
+                                                                       new ConfirmCallback() {
+                                                                           @Override
+                                                                           public void accepted() {
+                                                                               //do nothing
+                                                                           }
+                                                                       }).show();
+                                 } else {
+                                     Log.warn(CommitPresenter.class, "Git log failed", exception);
+                                     CommitPresenter.this.view.setMessage("");
+                                 }
+                                 view.setAmend(false);
                              }
                          });
     }

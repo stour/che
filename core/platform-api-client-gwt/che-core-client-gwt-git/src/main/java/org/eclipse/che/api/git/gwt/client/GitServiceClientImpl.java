@@ -142,7 +142,7 @@ public class GitServiceClientImpl implements GitServiceClient{
         InitRequest initRequest = dtoFactory.createDto(InitRequest.class);
         initRequest.setBare(bare);
         initRequest.setWorkingDir(project.getName());
-        initRequest.setInitCommit(true);
+        initRequest.setInitCommit(false);
 
         String url = "/git/" + workspaceId + INIT + "?projectPath=" + project.getPath();
 
