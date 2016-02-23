@@ -374,11 +374,9 @@ public class BranchPresenter implements BranchView.ActionDelegate {
                                                                                            }
                                                                                        }).show();
                                                  } else {
-                                                     final String errorMessage =
-                                                                                 (exception.getMessage() != null) ? exception.getMessage()
+                                                     final String errorMessage = (exception.getMessage() != null) ? exception.getMessage()
                                                                                      : constant.branchCreateFailed();
-                                                     final GitOutputConsole console =
-                                                                                      gitOutputConsoleFactory.create(BRANCH_CREATE_COMMAND_NAME);
+                                                     final GitOutputConsole console = gitOutputConsoleFactory.create(BRANCH_CREATE_COMMAND_NAME);
                                                      console.printError(errorMessage);
                                                      consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
                                                      notificationManager.notify(constant.branchCreateFailed(), FAIL, true,

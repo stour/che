@@ -160,7 +160,7 @@ public class RevisionListPresenter implements RevisionListView.ActionDelegate {
                                                                          }
                                                                      }).show();
                                } else {
-                                   notificationManager.notify(locale.logFailed(), FAIL, true);
+                                   notificationManager.notify(locale.logFailed(), FAIL, false);
                                }
 
                            }

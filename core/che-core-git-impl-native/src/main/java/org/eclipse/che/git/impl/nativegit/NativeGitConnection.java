@@ -365,20 +365,6 @@ public class NativeGitConnection implements GitConnection {
         InitCommand initCommand = nativeGit.createInitCommand();
         initCommand.setBare(request.isBare());
         initCommand.execute();
-        //make initial commit.
-        if (!request.isBare() && request.isInitCommit()) {
-            try {
-                nativeGit.createAddCommand()
-                         .setFilePattern(new ArrayList<>(Collections.singletonList(".")))
-                         .execute();
-                nativeGit.createCommitCommand()
-                         .setCommitter(getLocalCommitter())
-                         .setMessage("init")
-                         .execute();
-            } catch (GitException ignored) {
-                //if nothing to commit
-            }
-        }
     }
 
     @Override
