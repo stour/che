@@ -1,0 +1,26 @@
+[
+  {
+    "type": "docker",
+    "color": "blue"
+  },
+  {
+    "type": "info",
+    "color": "green"
+  },
+  {
+    "type": "error",
+    "color": "red"
+  },
+  {
+    "type": "warning",
+    "color": "yellow"
+  },
+  {
+    "type": "stdout",
+    "color": "black"
+  },
+  {
+    "type": "stderr",
+    "color": "brown"
+  }
+]

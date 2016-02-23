@@ -76,7 +76,7 @@
                     <div ng-if="$index < (createProjectCtrl.getCreationSteps().length - 1)" layout="row">
                         <div ng-class="{'create-project-panel-progress-item-link-enabled' : (createProjectCtrl.getCurrentProgressStep() > $index), 'create-project-panel-progress-item-link-error' : createProjectCtrl.getCreationSteps()[$index].hasError}"
                              class="create-project-panel-progress-item-link">&nbsp;</div>
-                        <textarea che-auto-scroll ng-show="createProjectCtrl.getCreationSteps()[$index].logs.length > 0" flex class="create-project-panel-progress-item-output" rows="5" ng-model="createProjectCtrl.getCreationSteps()[$index].logs"></textarea>
+                        <textarea che-auto-scroll che-format-output ng-show="createProjectCtrl.getCreationSteps()[$index].logs.length > 0" flex class="create-project-panel-progress-item-output" rows="5" ng-model="createProjectCtrl.getCreationSteps()[$index].logs"></textarea>
                     </div>
                 </div>
                 <div ng-class="{'create-project-panel-progress-lastitem-enabled' : (createProjectCtrl.getCurrentProgressStep() === (createProjectCtrl.getCreationSteps().length - 1)), 'create-project-panel-progress-lastitem-error' : createProjectCtrl.getCreationSteps()[$index].hasError}"
