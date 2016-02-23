@@ -29,6 +29,15 @@ public interface GitHubRepository {
     void setName(String name);
 
     /**
+     * Get the repository parent.
+     *
+     * @return the parent repository.
+     */
+    GitHubRepository getParent();
+
+    void setParent(GitHubRepository parent);
+
+    /**
      * Get repository's location.
      *
      * @return {@link String} url

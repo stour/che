@@ -24,6 +24,7 @@ import org.eclipse.che.ide.rest.AsyncRequestCallback;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Client service for Samples.
@@ -171,6 +172,23 @@ public interface GitHubClientService {
      *         callback called when operation is done.
      */
     void getCollaborators(@NotNull String user, @NotNull String repository, @NotNull AsyncRequestCallback<Collaborators> callback);
+
+    /**
+     * Get the map of available public and private repositories of the authorized user and organizations he exists in.
+     *
+     * @param callback
+     *         callback called when operation is done.
+     */
+    void getAllRepositories(@NotNull AsyncRequestCallback<Map<String, List<GitHubRepository>>> callback);
+
+    /**
+     * Get authorized user information.
+     *
+     * @param callback
+     *         callback called when operation is done.
+     */
+    void getUserInfo(@NotNull AsyncRequestCallback<GitHubUser> callback);
+
 
     /**
      * Get the list of the organizations, where authorized user is a member.

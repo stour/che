@@ -34,6 +34,7 @@ import org.eclipse.che.ide.ui.loaders.request.LoaderFactory;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation for {@link GitHubClientService}.
@@ -47,6 +48,7 @@ public class GitHubClientServiceImpl implements GitHubClientService {
     private static final String LIST_ACCOUNT   = "/list/account";
     private static final String LIST_ORG       = "/list/org";
     private static final String LIST_USER      = "/list/user";
+    private static final String LIST_ALL       = "/list/available";
     private static final String COLLABORATORS  = "/collaborators";
     private static final String ORGANIZATIONS  = "/orgs";
     private static final String USER           = "/user";
@@ -146,6 +148,20 @@ public class GitHubClientServiceImpl implements GitHubClientService {
     @Override
     public void getCollaborators(@NotNull String user, @NotNull String repository, @NotNull AsyncRequestCallback<Collaborators> callback) {
         String url = baseUrl + COLLABORATORS + "/" + user + "/" + repository;
+        asyncRequestFactory.createGetRequest(url).loader(loader).send(callback);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void getAllRepositories(@NotNull AsyncRequestCallback<Map<String, List<GitHubRepository>>> callback) {
+        String url = baseUrl + LIST_ALL;
+        asyncRequestFactory.createGetRequest(url).loader(loader).send(callback);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void getUserInfo(@NotNull AsyncRequestCallback<GitHubUser> callback) {
+        String url = baseUrl + USER;
         asyncRequestFactory.createGetRequest(url).loader(loader).send(callback);
     }
 
