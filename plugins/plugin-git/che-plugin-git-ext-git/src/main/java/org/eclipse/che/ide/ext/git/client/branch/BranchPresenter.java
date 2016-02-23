@@ -374,11 +374,7 @@ public class BranchPresenter implements BranchView.ActionDelegate {
      *         name of the executed command
      */
     void handleError(@NotNull Throwable exception, String commandName) {
-        int errorCode = getErrorCode(exception);
-        if (errorCode == ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED) {
-            dialogFactory.createMessageDialog(commandName, constant.initCommitWasNotPerformed(), null).show();
-            return;
-        } else if (errorCode == ErrorCodes.UNABLE_GET_PRIVATE_SSH_KEY) {
+        if (getErrorCode(exception) == ErrorCodes.UNABLE_GET_PRIVATE_SSH_KEY) {
             dialogFactory.createMessageDialog(commandName, constant.messagesUnableGetSshKey(), null).show();
             return;
         }
