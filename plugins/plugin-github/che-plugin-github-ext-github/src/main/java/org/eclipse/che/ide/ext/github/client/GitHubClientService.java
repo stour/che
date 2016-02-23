@@ -178,7 +178,7 @@ public interface GitHubClientService {
     Promise<List<GitHubUser>> getOrganizations();
 
     /**
-     * Get authorized user information.
+     * Returns promise which resolves authorized user information or rejects with an error.
      */
     Promise<GitHubUser> getUserInfo();
 

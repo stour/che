@@ -30,6 +30,7 @@ import org.eclipse.che.ide.rest.AsyncRequestLoader;
 import org.eclipse.che.ide.rest.DtoUnmarshallerFactory;
 import org.eclipse.che.ide.ui.loaders.request.LoaderFactory;
 
+
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -155,11 +156,12 @@ public class GitHubClientServiceImpl implements GitHubClientService {
         return asyncRequestFactory.createGetRequest(url).loader(loader).send(dtoUnmarshallerFactory.newListUnmarshaller(GitHubUser.class));
     }
 
-    /** {@inheritDoc} */
     @Override
     public Promise<GitHubUser> getUserInfo() {
-        String url = baseUrl + USER;
-        return asyncRequestFactory.createGetRequest(url).loader(loader).send(dtoUnmarshallerFactory.newUnmarshaller(GitHubUser.class));
+        final String url = baseUrl + USER;
+        return asyncRequestFactory.createGetRequest(url)
+                                  .loader(loader)
+                                  .send(dtoUnmarshallerFactory.newUnmarshaller(GitHubUser.class));
     }
 
     /** {@inheritDoc} */

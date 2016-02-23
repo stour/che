@@ -190,7 +190,6 @@ public interface GitServiceClient {
      * @param verbose
      *         If <code>true</code> show remote url and name otherwise show remote name
      * @param callback
-     *
      * @deprecated instead of this method should use {@link GitServiceClient#remoteList(String, ProjectConfigDto, String, boolean)}
      */
     void remoteList(String workspaceId,
@@ -211,7 +210,7 @@ public interface GitServiceClient {
      * @param verbose
      *         If <code>true</code> show remote url and name otherwise show remote name
      * @return a promise that provides list {@link Remote} repositories for the {@code workspaceId}, {@code projectConfig},
-     *         {@code remoteName}, {@code verbose} or rejects with an error.
+     * {@code remoteName}, {@code verbose} or rejects with an error.
      */
     Promise<List<Remote>> remoteList(String workspaceId, ProjectConfigDto projectConfig, @Nullable String remoteName, boolean verbose);
 
@@ -523,7 +522,8 @@ public interface GitServiceClient {
      * @param callback
      *         callback for sending asynchronous response with file content
      */
-    void showFileContent(String workspaceId, ProjectConfigDto project, String file, String version, AsyncRequestCallback<ShowFileContentResponse> callback);
+    void showFileContent(String workspaceId, ProjectConfigDto project, String file, String version,
+                         AsyncRequestCallback<ShowFileContentResponse> callback);
 
     /**
      * Get log of commits. The result is the list of {@link Revision}, which is returned by callback in
@@ -539,7 +539,8 @@ public interface GitServiceClient {
      *         if <code>true</code> the loq response will be in text format
      * @param callback
      */
-    void log(String workspaceId, ProjectConfigDto project, List<String> fileFilter, boolean isTextFormat, AsyncRequestCallback<LogResponse> callback);
+    void log(String workspaceId, ProjectConfigDto project, List<String> fileFilter, boolean isTextFormat,
+             AsyncRequestCallback<LogResponse> callback);
 
     /**
      * Merge the pointed commit with current HEAD.
@@ -597,6 +598,17 @@ public interface GitServiceClient {
      * @param callback
      */
     void status(String workspaceId, ProjectConfigDto project, AsyncRequestCallback<Status> callback);
+
+    /**
+     * Returns the current working tree status.
+     *
+     * @param workspaceId
+     *         id of the workspace
+     * @param project
+     *         the project.
+     * @return the promise which either resolves working tree status or rejects with an error
+     */
+    Promise<Status> status(String workspaceId, ProjectConfigDto project);
 
     /**
      * Get the Git ReadOnly Url for the pointed item's location.
