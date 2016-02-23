@@ -302,6 +302,7 @@ public class CommitPresenter implements CommitView.ActionDelegate {
                                  } else {
                                      Log.warn(CommitPresenter.class, "Git log failed", exception);
                                      CommitPresenter.this.view.setMessage("");
+                                     notificationManager.notify(constant.logFailed(), FAIL, false);
                                  }
                              }
                          });

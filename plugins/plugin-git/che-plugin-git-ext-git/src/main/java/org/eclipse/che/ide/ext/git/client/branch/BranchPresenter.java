@@ -394,33 +394,21 @@ public class BranchPresenter implements BranchView.ActionDelegate {
                 case BRANCH_RENAME_COMMAND_NAME:
                     errorMessage = constant.branchRenameFailed();
                     break;
+                case BRANCH_CHECKOUT_COMMAND_NAME:
+                    errorMessage = constant.branchCheckoutFailed();
+                    break;
             }
         }
+
         GitOutputConsole console = gitOutputConsoleFactory.create(commandName);
-        if (BRANCH_CHECKOUT_COMMAND_NAME.equals(commandName)) {
-            printGitMessage(errorMessage, console);
-        } else {
-            console.printError(errorMessage);
-        }
+        printGitMessage(errorMessage, console);
         consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
         notificationManager.notify(errorMessage, FAIL, true, project.getRootProject());
     }
 
     private void printGitMessage(String messageText, GitOutputConsole console) {
-        if (messageText == null || messageText.isEmpty()) {
-            return;
-        }
-        JSONObject jsonObject = JSONParser.parseStrict(messageText).isObject();
-        if (jsonObject == null) {
-            return;
-        }
-        String message = "";
-        if (jsonObject.containsKey("message")) {
-            message = jsonObject.get("message").isString().stringValue();
-        }
-
         console.print("");
-        String[] lines = message.split("\n");
+        String[] lines = messageText.split("\n");
         for (String line : lines) {
             console.printError(line);
         }
