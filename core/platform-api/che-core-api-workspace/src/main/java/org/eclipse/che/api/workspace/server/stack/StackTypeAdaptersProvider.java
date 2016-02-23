@@ -37,9 +37,10 @@ import org.eclipse.che.api.workspace.server.stack.adapters.LimitsAdapter;
 import org.eclipse.che.api.workspace.server.stack.adapters.MachineSourceAdapter;
 import org.eclipse.che.api.workspace.server.stack.adapters.ProjectConfigAdapter;
 import org.eclipse.che.api.workspace.server.stack.adapters.StackComponentAdapter;
-import org.eclipse.che.api.workspace.server.stack.adapters.StackIconAdapter;
 import org.eclipse.che.api.workspace.server.stack.adapters.StackSourceAdapter;
 import org.eclipse.che.api.workspace.server.stack.adapters.WorkspaceConfigAdapter;
+import org.eclipse.che.api.workspace.server.stack.adapters.MachineConfigAdapter;
+import org.eclipse.che.api.workspace.server.stack.adapters.StackIconAdapter;
 import org.eclipse.che.api.workspace.server.stack.image.StackIcon;
 
 import java.util.HashMap;
@@ -71,7 +72,7 @@ public class StackTypeAdaptersProvider {
         adapters.put(Recipe.class, new RecipeTypeAdapter());
         adapters.put(Limits.class, new LimitsAdapter());
         adapters.put(MachineSource.class, new MachineSourceAdapter());
-        adapters.put(MachineConfig.class, new MachineSourceAdapter());
+        adapters.put(MachineConfig.class, new MachineConfigAdapter());
         adapters.put(StackSource.class, new StackSourceAdapter());
         adapters.put(Permissions.class, new PermissionsAdapter());
         adapters.put(Group.class, new GroupAdapter());
