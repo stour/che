@@ -72,6 +72,9 @@ public class DockerInstanceRuntimeInfo implements MachineRuntimeInfo {
         this.containerHost = containerHost;
     }
 
+    // todo add servers from conf
+    !!!;
+
     @Override
     public Map<String, String> getProperties() {
         Map<String, String> md = new LinkedHashMap<>();

@@ -14,12 +14,15 @@ import org.eclipse.che.api.core.BadRequestException;
 import org.eclipse.che.api.core.model.workspace.WorkspaceConfig;
 import org.eclipse.che.api.machine.shared.dto.MachineConfigDto;
 import org.eclipse.che.api.machine.shared.dto.MachineSourceDto;
+import org.eclipse.che.api.machine.shared.dto.ServerConfDto;
 import org.eclipse.che.api.workspace.shared.dto.EnvironmentDto;
 import org.eclipse.che.api.workspace.shared.dto.WorkspaceConfigDto;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static java.util.Collections.singletonList;
 import static org.eclipse.che.dto.server.DtoFactory.newDto;
@@ -86,11 +89,19 @@ public class DefaultWorkspaceConfigValidatorTest {
 
 
     private static WorkspaceConfig createConfig(String wsName, boolean isDevMachine) {
-        MachineConfigDto devMachine = newDto(MachineConfigDto.class).withDev(isDevMachine)
-                                                                    .withName("dev-machine")
-                                                                    .withType("docker")
-                                                                    .withSource(newDto(MachineSourceDto.class).withLocation("location")
-                                                                                                              .withType("recipe"));
+        MachineConfigDto devMachine =
+                newDto(MachineConfigDto.class).withDev(isDevMachine)
+                                              .withName("dev-machine")
+                                              .withType("docker")
+                                              .withSource(newDto(MachineSourceDto.class).withLocation("location")
+                                                                                        .withType("recipe"))
+                                              .withServers(Arrays.asList(newDto(ServerConfDto.class).withRef("ref1")
+                                                                                                    .withPort("8080")
+                                                                                                    .withProtocol("https"),
+                                                                         newDto(ServerConfDto.class).withRef("ref2")
+                                                                                                    .withPort("9090/udp")
+                                                                                                    .withProtocol("someprotocol")))
+                                              .withEnvVariables(Collections.singletonMap("key1", "value1"));
         EnvironmentDto devEnv = newDto(EnvironmentDto.class).withName("dev-env")
                                                             .withMachineConfigs(new ArrayList<>(singletonList(devMachine)))
                                                             .withRecipe(null);
