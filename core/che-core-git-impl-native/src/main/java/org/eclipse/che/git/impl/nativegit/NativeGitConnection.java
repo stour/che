@@ -180,7 +180,8 @@ public class NativeGitConnection implements GitConnection {
         try {
             branchCreateCommand.execute();
         } catch (ServerException exception) {
-            if ("fatal: Not a valid object name: 'master'.\n".equals(exception.getMessage())) {
+            Pattern errorPattern = Pattern.compile("fatal: Not a valid object name: '.*'.\n");
+            if (errorPattern.matcher(exception.getMessage()).find()) {
                 throw new GitException(exception.getMessage(), ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED);
             }
         }
@@ -372,7 +373,8 @@ public class NativeGitConnection implements GitConnection {
         try {
             return new LogPage(nativeGit.createLogCommand().setFileFilter(request.getFileFilter()).execute());
         } catch (ServerException exception) {
-            if ("fatal: your current branch 'master' does not have any commits yet\n".equals(exception.getMessage())) {
+            Pattern errorPattern = Pattern.compile("fatal: your current branch '.*' does not have any commits yet\n");
+            if (errorPattern.matcher(exception.getMessage()).find()) {
                 throw new GitException(exception.getMessage(), ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED);
             } else {
                 throw exception;

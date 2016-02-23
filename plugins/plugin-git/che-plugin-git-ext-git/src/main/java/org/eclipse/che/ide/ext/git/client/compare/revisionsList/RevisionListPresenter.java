@@ -152,13 +152,9 @@ public class RevisionListPresenter implements RevisionListView.ActionDelegate {
                            @Override
                            protected void onFailure(Throwable exception) {
                                if (getErrorCode(exception) == ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED) {
-                                   dialogFactory.createMessageDialog(locale.compareWithRevisionTitle(), locale.initCommitWasNotPerformed(),
-                                                                     new ConfirmCallback() {
-                                                                         @Override
-                                                                         public void accepted() {
-                                                                             //do nothing
-                                                                         }
-                                                                     }).show();
+                                   dialogFactory.createMessageDialog(locale.compareWithRevisionTitle(),
+                                                                     locale.initCommitWasNotPerformed(),
+                                                                     null).show();
                                } else {
                                    notificationManager.notify(locale.logFailed(), FAIL, false);
                                }

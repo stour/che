@@ -71,9 +71,6 @@ public interface GitLocalizationConstant extends Messages {
     String buttonScroll();
 
     // MESSAGES
-    @Key("messages.unableGetSshKeyTitle")
-    String messagesUnableGetSshKeyTitle();
-
     @Key("messages.unableGetSshKey")
     String messagesUnableGetSshKey();
 

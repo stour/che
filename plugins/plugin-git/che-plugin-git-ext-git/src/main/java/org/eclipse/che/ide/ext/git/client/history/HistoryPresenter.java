@@ -43,7 +43,6 @@ import org.eclipse.che.ide.extension.machine.client.processes.ConsolesPanelPrese
 import org.eclipse.che.ide.rest.AsyncRequestCallback;
 import org.eclipse.che.ide.rest.DtoUnmarshallerFactory;
 import org.eclipse.che.ide.rest.StringUnmarshaller;
-import org.eclipse.che.ide.ui.dialogs.ConfirmCallback;
 import org.eclipse.che.ide.ui.dialogs.DialogFactory;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
@@ -174,13 +173,9 @@ public class HistoryPresenter extends BasePresenter implements HistoryView.Actio
                         @Override
                         protected void onFailure(Throwable exception) {
                             if (getErrorCode(exception) == ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED) {
-                                dialogFactory.createMessageDialog(constant.historyTitle(), constant.initCommitWasNotPerformed(),
-                                                                  new ConfirmCallback() {
-                                                                      @Override
-                                                                      public void accepted() {
-                                                                          //do nothing
-                                                                      }
-                                                                  }).show();
+                                dialogFactory.createMessageDialog(constant.historyTitle(),
+                                                                  constant.initCommitWasNotPerformed(),
+                                                                  null).show();
                             } else {
                                 nothingToDisplay(null);
                                 String errorMessage = exception.getMessage() != null ? exception.getMessage() : constant.logFailed();

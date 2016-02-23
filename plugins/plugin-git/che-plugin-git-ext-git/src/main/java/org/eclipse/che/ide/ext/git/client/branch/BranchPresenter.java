@@ -17,7 +17,6 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 
 import org.eclipse.che.api.core.ErrorCodes;
-import org.eclipse.che.api.core.rest.shared.dto.ServiceError;
 import org.eclipse.che.api.git.gwt.client.GitServiceClient;
 import org.eclipse.che.api.git.shared.Branch;
 import org.eclipse.che.api.git.shared.CheckoutRequest;
@@ -177,12 +176,7 @@ public class BranchPresenter implements BranchView.ActionDelegate {
 
                                  @Override
                                  protected void onFailure(Throwable exception) {
-                                     String errorMessage =
-                                             (exception.getMessage() != null) ? exception.getMessage() : constant.branchRenameFailed();
-                                     final GitOutputConsole console = gitOutputConsoleFactory.create(BRANCH_RENAME_COMMAND_NAME);
-                                     console.printError(errorMessage);
-                                     consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
-                                     notificationManager.notify(constant.branchRenameFailed(), FAIL, true, project.getRootProject());
+                                     handleError(exception, BRANCH_RENAME_COMMAND_NAME);
                                      getBranches();//rename of remote branch occurs in three stages, so needs update list of branches on view
                                  }
                              });
@@ -208,9 +202,7 @@ public class BranchPresenter implements BranchView.ActionDelegate {
 
             @Override
             protected void onFailure(Throwable exception) {
-                GitOutputConsole console = gitOutputConsoleFactory.create(BRANCH_DELETE_COMMAND_NAME);
-                handleError(exception, console);
-                consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
+                handleError(exception, BRANCH_DELETE_COMMAND_NAME);
             }
         });
     }
@@ -260,9 +252,7 @@ public class BranchPresenter implements BranchView.ActionDelegate {
 
             @Override
             protected void onFailure(Throwable exception) {
-                final GitOutputConsole console = gitOutputConsoleFactory.create(BRANCH_CHECKOUT_COMMAND_NAME);
-                printGitMessage(exception.getMessage(), console);
-                consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
+                handleError(exception, BRANCH_CHECKOUT_COMMAND_NAME);
             }
         });
     }
@@ -305,44 +295,25 @@ public class BranchPresenter implements BranchView.ActionDelegate {
         }
     }
 
-    private void printGitMessage(String messageText, GitOutputConsole console) {
-        if (messageText == null || messageText.isEmpty()) {
-            return;
-        }
-        JSONObject jsonObject = JSONParser.parseStrict(messageText).isObject();
-        if (jsonObject == null) {
-            return;
-        }
-        String message = "";
-        if (jsonObject.containsKey("message")) {
-            message = jsonObject.get("message").isString().stringValue();
-        }
-
-        console.print("");
-        String[] lines = message.split("\n");
-        for (String line : lines) {
-            console.printError(line);
-        }
-    }
-
     /** Get the list of branches. */
     private void getBranches() {
         service.branchList(workspaceId, project.getRootProject(), LIST_ALL,
                            new AsyncRequestCallback<List<Branch>>(dtoUnmarshallerFactory.newListUnmarshaller(Branch.class)) {
                                @Override
                                protected void onSuccess(List<Branch> result) {
-                                   view.setBranches(result);
-                                   view.showDialogIfClosed();
+                                   if (result.isEmpty()) {
+                                       dialogFactory.createMessageDialog(constant.branchTitle(),
+                                                                         constant.initCommitWasNotPerformed(),
+                                                                         null).show();
+                                   } else {
+                                       view.setBranches(result);
+                                       view.showDialogIfClosed();
+                                   }
                                }
 
                                @Override
                                protected void onFailure(Throwable exception) {
-                                   final String errorMessage =
-                                           (exception.getMessage() != null) ? exception.getMessage() : constant.branchesListFailed();
-                                   final GitOutputConsole console = gitOutputConsoleFactory.create(BRANCH_LIST_COMMAND_NAME);
-                                   console.printError(errorMessage);
-                                   consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
-                                   notificationManager.notify(constant.branchesListFailed(), FAIL, true, project.getRootProject());
+                                   handleError(exception, BRANCH_LIST_COMMAND_NAME);
                                }
                            }
                           );
@@ -364,24 +335,7 @@ public class BranchPresenter implements BranchView.ActionDelegate {
 
                                              @Override
                                              protected void onFailure(Throwable exception) {
-                                                 if (getErrorCode(exception) == ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED) {
-                                                     dialogFactory.createMessageDialog(constant.branchCreateNew(),
-                                                                                       constant.initCommitWasNotPerformed(),
-                                                                                       new ConfirmCallback() {
-                                                                                           @Override
-                                                                                           public void accepted() {
-                                                                                               //do nothing
-                                                                                           }
-                                                                                       }).show();
-                                                 } else {
-                                                     final String errorMessage = (exception.getMessage() != null) ? exception.getMessage()
-                                                                                     : constant.branchCreateFailed();
-                                                     final GitOutputConsole console = gitOutputConsoleFactory.create(BRANCH_CREATE_COMMAND_NAME);
-                                                     console.printError(errorMessage);
-                                                     consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
-                                                     notificationManager.notify(constant.branchCreateFailed(), FAIL, true,
-                                                                                project.getRootProject());
-                                                 }
+                                                 handleError(exception, BRANCH_CREATE_COMMAND_NAME);
                                              }
 
                                          });
@@ -414,32 +368,66 @@ public class BranchPresenter implements BranchView.ActionDelegate {
     /**
      * Handler some action whether some exception happened.
      *
-     * @param throwable
+     * @param exception
      *         exception what happened
-     * @param console
-     *         console for displaying error
+     * @param commandName
+     *         name of the executed command
      */
-    void handleError(@NotNull Throwable throwable, GitOutputConsole console) {
-        String errorMessage = throwable.getMessage();
-        if (errorMessage == null) {
-            console.printError(constant.branchDeleteFailed());
-            notificationManager.notify(constant.branchDeleteFailed(), FAIL, true, project.getRootProject());
+    void handleError(@NotNull Throwable exception, String commandName) {
+        int errorCode = getErrorCode(exception);
+        if (errorCode == ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED) {
+            dialogFactory.createMessageDialog(commandName, constant.initCommitWasNotPerformed(), null).show();
+            return;
+        } else if (errorCode == ErrorCodes.UNABLE_GET_PRIVATE_SSH_KEY) {
+            dialogFactory.createMessageDialog(commandName, constant.messagesUnableGetSshKey(), null).show();
             return;
         }
 
-        try {
-            errorMessage = dtoFactory.createDtoFromJson(errorMessage, ServiceError.class).getMessage();
-            if (errorMessage.equals("Unable get private ssh key")) {
-                console.printError(constant.messagesUnableGetSshKey());
-                notificationManager.notify(constant.messagesUnableGetSshKeyTitle(), constant.messagesUnableGetSshKey(), FAIL, true,
-                                           project.getRootProject());
-                return;
+        String errorMessage = exception.getMessage();
+        if (errorMessage == null) {
+            switch (commandName) {
+                case BRANCH_CREATE_COMMAND_NAME:
+                    errorMessage = constant.branchCreateFailed();
+                    break;
+                case BRANCH_DELETE_COMMAND_NAME:
+                    errorMessage = constant.branchDeleteFailed();
+                    break;
+                case BRANCH_LIST_COMMAND_NAME:
+                    errorMessage = constant.branchesListFailed();
+                    break;
+                case BRANCH_RENAME_COMMAND_NAME:
+                    errorMessage = constant.branchRenameFailed();
+                    break;
             }
+        }
+        GitOutputConsole console = gitOutputConsoleFactory.create(commandName);
+        if (BRANCH_CHECKOUT_COMMAND_NAME.equals(commandName)) {
+            printGitMessage(errorMessage, console);
+        } else {
             console.printError(errorMessage);
-            notificationManager.notify(errorMessage, FAIL, true, project.getRootProject());
-        } catch (Exception e) {
-            console.printError(errorMessage);
-            notificationManager.notify(errorMessage, FAIL, true, project.getRootProject());
+        }
+        consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
+        notificationManager.notify(errorMessage, FAIL, true, project.getRootProject());
+    }
+
+    private void printGitMessage(String messageText, GitOutputConsole console) {
+        if (messageText == null || messageText.isEmpty()) {
+            return;
+        }
+        JSONObject jsonObject = JSONParser.parseStrict(messageText).isObject();
+        if (jsonObject == null) {
+            return;
+        }
+        String message = "";
+        if (jsonObject.containsKey("message")) {
+            message = jsonObject.get("message").isString().stringValue();
+        }
+
+        console.print("");
+        String[] lines = message.split("\n");
+        for (String line : lines) {
+            console.printError(line);
         }
     }
+
 }

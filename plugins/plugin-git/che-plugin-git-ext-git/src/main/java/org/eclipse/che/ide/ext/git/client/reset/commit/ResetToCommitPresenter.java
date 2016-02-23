@@ -31,7 +31,6 @@ import org.eclipse.che.ide.ext.git.client.outputconsole.GitOutputConsoleFactory;
 import org.eclipse.che.ide.extension.machine.client.processes.ConsolesPanelPresenter;
 import org.eclipse.che.ide.rest.AsyncRequestCallback;
 import org.eclipse.che.ide.rest.DtoUnmarshallerFactory;
-import org.eclipse.che.ide.ui.dialogs.ConfirmCallback;
 import org.eclipse.che.ide.ui.dialogs.DialogFactory;
 
 import javax.validation.constraints.NotNull;
@@ -112,21 +111,16 @@ public class ResetToCommitPresenter implements ResetToCommitView.ActionDelegate 
                         @Override
                         protected void onFailure(Throwable exception) {
                             if (getErrorCode(exception) == ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED) {
-                                dialogFactory.createMessageDialog(constant.resetCommitViewTitle(), constant.initCommitWasNotPerformed(),
-                                                                  new ConfirmCallback() {
-                                                                      @Override
-                                                                      public void accepted() {
-                                                                          //do nothing
-                                                                      }
-                                                                  }).show();
-                            } else {
-                                String errorMessage = (exception.getMessage() != null) ? exception.getMessage() : constant.logFailed();
-                                GitOutputConsole console = gitOutputConsoleFactory.create(LOG_COMMAND_NAME);
-                                console.printError(errorMessage);
-                                consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
-                                notificationManager
-                                        .notify(constant.logFailed(), FAIL, true, appContext.getCurrentProject().getRootProject());
+                                dialogFactory.createMessageDialog(constant.resetCommitViewTitle(),
+                                                                  constant.initCommitWasNotPerformed(),
+                                                                  null).show();
+                                return;
                             }
+                            String errorMessage = (exception.getMessage() != null) ? exception.getMessage() : constant.logFailed();
+                            GitOutputConsole console = gitOutputConsoleFactory.create(LOG_COMMAND_NAME);
+                            console.printError(errorMessage);
+                            consolesPanelPresenter.addCommandOutput(appContext.getDevMachineId(), console);
+                            notificationManager.notify(constant.logFailed(), FAIL, true, appContext.getCurrentProject().getRootProject());
                         }
                     }
                    );

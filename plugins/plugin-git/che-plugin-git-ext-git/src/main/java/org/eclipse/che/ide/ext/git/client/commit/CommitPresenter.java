@@ -296,13 +296,9 @@ public class CommitPresenter implements CommitView.ActionDelegate {
                              @Override
                              protected void onFailure(final Throwable exception) {
                                  if (getErrorCode(exception) == ErrorCodes.INIT_COMMIT_WAS_NOT_PERFORMED) {
-                                     dialogFactory.createMessageDialog(constant.branchCreateNew(), constant.initCommitWasNotPerformed(),
-                                                                       new ConfirmCallback() {
-                                                                           @Override
-                                                                           public void accepted() {
-                                                                               //do nothing
-                                                                           }
-                                                                       }).show();
+                                     dialogFactory.createMessageDialog(constant.commitTitle(),
+                                                                       constant.initCommitWasNotPerformed(),
+                                                                       null).show();
                                  } else {
                                      Log.warn(CommitPresenter.class, "Git log failed", exception);
                                      CommitPresenter.this.view.setMessage("");
