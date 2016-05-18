@@ -31,4 +31,23 @@
         <module>assembly-wsmaster-war</module>
         <module>assembly-main</module>
     </modules>
+    <dependencyManagement>
+        <dependencies>
+          <dependency>
+              <groupId>org.eclipse.che</groupId>
+              <artifactId>che-plugin-sample-wizard-ide</artifactId>
+              <version>${project.version}</version>
+          </dependency>
+          <dependency>
+              <groupId>org.eclipse.che</groupId>
+              <artifactId>che-plugin-sample-wizard-server</artifactId>
+              <version>${project.version}</version>
+          </dependency>
+          <dependency>
+              <groupId>org.eclipse.che</groupId>
+              <artifactId>che-plugin-sample-wizard-shared</artifactId>
+              <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
 </project>
